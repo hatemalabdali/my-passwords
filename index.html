@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>table2excel | rusty1s</title>
+<script src="http://unpkg.com/read-excel-file@4.x/bundle/read-excel-file.min.js"></script>
+    <!-- <link rel="stylesheet" type="text/css" href="style.css"/> -->
+    <style>
+      table {
+  margin-bottom: 20px;
+  margin-left: 10%;
+}
+
+table, th {
+  border: 1px solid black;
+}
+table,  td {
+  border: 1px solid black;
+  
+}
+table,  tr {
+  border: 1px solid black;
+  background-color: rgb(239, 244, 174);
+}
+
+th, td {
+  padding: 5px 10px;
+}
+.userForm{
+  background-color: antiquewhite;
+}
+
+.userForm .user label{
+  margin-right: 2.2%;
+}
+.userForm .email label{
+  margin-right: 1.2%;
+}
+.userForm .pass label{
+  margin-right: 0%;
+}
+.userForm .notes label{
+  margin-right: 1.8%;
+}
+h1{
+  direction: rtl;
+}
+body{
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+    </style>
+
+    <script src="../dist/table2excel.js"></script>
+  </head>
+
+  <body>
+    <h1>أنقر على ( أختر ملف ) ثم اختر ملف الاكسل الذي أسمه ( EX.xlsx ) </h1>
+<input type="file" id="input">
+<br>
+    <div>
+      <table id="tb1-data"></table>
+    </div>
+    <div id="hid" style="display: none;">
+
+    <div class="userForm">
+      <div class="webname">
+        <label >Web Name</label>
+        <input id="webnam" type="text">
+      </div>
+      <div class="user">
+        <label >User</label>
+        <input id="user" type="text">
+      </div>
+      <div class="email">
+        <label >E.Mail</label>
+        <input id="email" type="text">
+      </div>
+      <div class="pass">
+        <label >Password</label>
+        <input id="pass" type="text">
+      </div>
+      
+      <div class=" notes">
+        <label >Notes</label>
+        <input id="note" type="text">
+      </div>
+      <br>
+      
+      
+     
+      <button onclick="hh()"  id="add">+</button>
+    </div>
+    <br>
+    <br>
+    <button  id="export">Export to excel</button>
+    </div>
+    
+    
+    <script>
+        // طباعة الملف بالكامل
+       
+
+        let hiddendiv = document.getElementById('hid'); 
+        var input = document.getElementById('input');
+        input.addEventListener('change',function(){
+            readXlsxFile(input.files[0]).then(function(data){
+            
+            
+            var i = 0;
+            data.map((row,index) => {
+              if(i==0){
+                let table = document.getElementById('tb1-data');
+                generateTableHead(table,row);
+              }
+
+               if(i>0){
+                let table = document.getElementById('tb1-data');
+                generateTableRows(table,row);
+              }
+                    i++;
+                });
+                
+            });
+            hiddendiv.style.display='block';
+            // expor.style.display='block';
+            // add.style.display='block';
+            
+            
+        });
+
+        function generateTableHead(table,data){
+            let thead = table.createTHead();
+            let row = thead.insertRow();
+            for(let key of data){
+                let th = document.createElement('th');
+                let text = document.createTextNode(key);
+                th.appendChild(text);
+                row.appendChild(th);
+            }
+        }
+
+         function generateTableRows(table,data){
+            let newRow = table.insertRow(-1);
+            data.map((row,index)=>{
+                let newCell = newRow.insertCell();
+                let newText = document.createTextNode(row);
+                newCell.appendChild(newText);
+            });
+           
+        }
+
+    
+    </script>
+
+
+    
+
+    <script>
+      let expor = document.getElementById('export');
+        let add = document.getElementById('add');
+
+       function addRow() {
+      // 1. الحصول على مرجع للجدول
+      var table = document.getElementById("tb1-data");
+        let webnametxt = document.getElementById('webnam');
+        let usertxt = document.getElementById('user');
+        let emailtxt = document.getElementById('email');
+        let passtxt = document.getElementById('pass');
+        let notetxt = document.getElementById('note');
+      // 2. إنشاء عنصر للصف جديد
+      var newRow = table.insertRow(table.rows.length); // يضيف الصف في النهاية
+
+      // 3. إنشاء خلايا للصف الجديد
+      var cell1 = newRow.insertCell(0); // الخلية الأولى
+      var cell2 = newRow.insertCell(1); // الخلية الثانية
+      var cell3 = newRow.insertCell(2); // الخلية الأولى
+      var cell4 = newRow.insertCell(3);
+      var cell5 = newRow.insertCell(4);
+      // 4. إضافة محتوى إلى الخلايا
+      cell1.innerHTML = webnametxt.value;
+      cell2.innerHTML = usertxt.value;
+      cell3.innerHTML = passtxt.value;
+      cell4.innerHTML = emailtxt.value;
+      cell5.innerHTML = notetxt.value;
+
+      // يمكنك إضافة المزيد من الخلايا بنفس الطريقة
+      // var cell3 = newRow.insertCell(2);
+      // cell3.innerHTML = "قيمة أخرى";
+    }
+
+ 
+      var table2excel = new Table2Excel();
+       function hh(){
+        let webnametxt = document.getElementById('webnam');
+        let usertxt = document.getElementById('user');
+        let emailtxt = document.getElementById('email');
+        let passtxt = document.getElementById('pass');
+        let notetxt = document.getElementById('note');
+          if(webnametxt.value == '')
+         {
+          alert('لم يتم ادخال اسم الموقع');
+         }
+         else if(usertxt.value == '')
+         {
+          alert('لم يتم ادخال اسم المستخدم');
+         }
+         else if(passtxt.value == '')
+         {
+          alert('لم يتم ادخال كلمة السر');
+         }
+         else
+         {
+          addRow();
+          webnametxt.value='';
+          usertxt.value='';
+          emailtxt.value='';
+          passtxt.value='';
+          notetxt.value='';
+         }
+        
+      
+        
+      }
+      
+
+      document.getElementById('export').addEventListener('click', function() {
+        table2excel.export(document.querySelectorAll('table'));
+      });
+    </script>
+
+  </body>
+</html>
